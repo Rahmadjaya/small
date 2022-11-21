@@ -13,7 +13,6 @@ import {
   Pressable,
   ScrollView } from "react-native";
 import { useFonts } from 'expo-font';
-import { ImageSlider } from "react-native-image-slider-banner";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Slideshow from 'react-native-image-slider-show';
 
@@ -31,23 +30,29 @@ export default function DetailProduct({ navigation, route }) {
 
   const fetchData = async() => {
     try {
-      const product = require('./1.json');
-      setProductDetail(product)
+      // const product = require('./1.json');
+      // setProductDetail(product)
+      // let dataimage = [];
+      // for (let i = 0; i < product.images.length; i++) {
+      //   let x = {
+      //     url: product.images[i]
+      //   }
+      //   dataimage.push(x)
+      // }
+      let products = await fetch('https://dummyjson.com/products/'+route.params.id);
+      let jsonproducts = await products.json();
+      setProductDetail(jsonproducts)
       let dataimage = [];
-      for (let i = 0; i < product.images.length; i++) {
+      for (let i = 0; i < jsonproducts.images.length; i++) {
         let x = {
-          url: product.images[i]
+          url: jsonproducts.images[i]
         }
         dataimage.push(x)
       }
-      console.log(dataimage)
       setImageSlide(dataimage)
-      // let products = await fetch('https://dummyjson.com/products/'+route.params.id);
-      // let jsonproducts = await products.json();
-
       setLoading(false);
     } catch (error) {
-      // Alert(error);
+      Alert(error);
     }    
   }
 
@@ -62,13 +67,7 @@ export default function DetailProduct({ navigation, route }) {
           <View style={styles.boxContainer}>
             <View style={styles.box} >
               <View style={styles.card}>
-              <Slideshow 
-                dataSource={imageslide}/>
-                {/* <ImageSlider 
-                    style={styles.slide}
-                    data={productdetail.images}
-                    autoPlay={true}
-                /> */}
+                <Slideshow height={300} dataSource={imageslide}/>
                 <Text style={[styles.title, styles.fontcustom]}>{productdetail.title}</Text>
                 <Text style={[styles.price, styles.fontcustom]}>{productdetail.price}</Text>
                 <View style={styles.rating}>
@@ -158,10 +157,11 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   slide: {
-    width: 400
+    height: 250
   },
   title: {
     fontSize: 14,
+    marginTop: 5
   },
   price: {
     fontSize: 16,
