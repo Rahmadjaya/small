@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { 
   StyleSheet,
-  Button,
   SafeAreaView,
   View,
-  FlatList,
   ActivityIndicator,
   Alert,
   Text,
-  TouchableOpacity,
-  Image,
   Pressable,
   ScrollView } from "react-native";
-import { useFonts } from 'expo-font';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Slideshow from 'react-native-image-slider-show';
 
@@ -20,9 +15,6 @@ export default function DetailProduct({ navigation, route }) {
   const [isLoading, setLoading] = useState(true);
   const [productdetail, setProductDetail] = useState('');
   const [imageslide, setImageSlide] = useState([]);
-  const [fontsLoaded, setFont] = useFonts({
-    'Inter-SemiBold': 'https://rsms.me/inter/font-files/Inter-SemiBold.otf?v=3.12',
-  });
 
   useEffect(() => {
     fetchData();
@@ -30,15 +22,6 @@ export default function DetailProduct({ navigation, route }) {
 
   const fetchData = async() => {
     try {
-      // const product = require('./1.json');
-      // setProductDetail(product)
-      // let dataimage = [];
-      // for (let i = 0; i < product.images.length; i++) {
-      //   let x = {
-      //     url: product.images[i]
-      //   }
-      //   dataimage.push(x)
-      // }
       let products = await fetch('https://dummyjson.com/products/'+route.params.id);
       let jsonproducts = await products.json();
       setProductDetail(jsonproducts)
@@ -138,7 +121,7 @@ const styles = StyleSheet.create({
     alignContent: 'center'
   },
   box: {
-    width: 400,
+    width: '100%',
   },
   card: {
     borderColor: '#ddd',
@@ -202,7 +185,6 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   fontcustom: {
-    fontFamily: 'Inter-SemiBold',
     marginBottom: 5
   },
   row: {
@@ -221,7 +203,6 @@ const styles = StyleSheet.create({
     padding: 7
   },
   btntext1: {
-    fontFamily: 'Inter-SemiBold',
     color: '#2196f3',
     textAlign: 'center'
   },
@@ -234,7 +215,6 @@ const styles = StyleSheet.create({
     padding: 7
   },
   btntext2: {
-    fontFamily: 'Inter-SemiBold',
     color: 'white',
     textAlign: 'center'
   },

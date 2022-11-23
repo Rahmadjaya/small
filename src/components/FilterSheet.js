@@ -1,86 +1,110 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   StyleSheet,
-  Button,
   SafeAreaView,
   View,
   Text,
+  Alert,
   TouchableOpacity,
-  Picker,
   Pressable} from "react-native";
-import { useFonts } from 'expo-font';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { Picker } from "@react-native-picker/picker";
 import { BottomSheet } from "react-native-btr";
 
 export default function FilterSheet(props) {
   const [visible, setVisible] = useState(false);
   const [selectcategory, setSelectCategory] = useState('');
-  const [sortprice, setSortPrice] = useState('');
-  const [fontsLoaded, setFont] = useFonts({
-    'Inter-SemiBold': 'https://rsms.me/inter/font-files/Inter-SemiBold.otf?v=3.12',
-  });
+  const [datacategories, setDataCategories] = useState([]);
 
-  const clickToggle = () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async() => {
+    try {
+      let categories = await fetch('https://dummyjson.com/products/categories');
+      let jsoncategories = await categories.json();
+      setDataCategories(jsoncategories.sort());
+
+    } catch (error) {
+      Alert(error);
+    }    
+  }
+
+  const clickToggleSheet = () => {
     setVisible((visible) => !visible);
-    // setSelectCategory('');
-    // setSortPrice('');
   }
 
   const clickButtonCategory = (data) => {
     setSelectCategory(data)
   }
   
-  const clickSortByPrice = (data) => {
-    setSortPrice(data);
-  }
-  
   const clickFilter = () => {
-    props.FilterProducts(selectcategory, sortprice);
+    props.FilterProducts(selectcategory);
+    setSelectCategory(selectcategory);
+    setVisible((visible) => !visible);
+  }
+
+  const sortByPrice = (a) => {
+    props.SortByPrices(a);
+  }
+
+  const clickReset = () => {
+    props.ResetFilter();
     setVisible((visible) => !visible);
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={clickToggle}>
-        <View style={styles.button}>
-          <FontAwesome name="filter" size={14} color="white"/> <Text style={styles.text}>Filter</Text>
-        </View>
-      </TouchableOpacity>
+    <SafeAreaView>
+      <View style={styles.row}>
+        <TouchableOpacity style={styles.col6} onPress={clickToggleSheet}>
+          <View style={styles.row} >
+            <FontAwesome name="filter" size={14} color="white"/>
+            <Text style={styles.text}>Filter</Text>
+          </View>
+        </TouchableOpacity>
+        <Picker
+          selectedValue={props.ValueSort}
+          style={[styles.select, styles.col6]}
+          onValueChange={(item, itemIndex) => sortByPrice(item)} >
+            <Picker.Item label="Urutkan" value="" />
+            <Picker.Item label="Harga Terendah" value="asc" />
+            <Picker.Item label="Harga Tertinggi" value="desc" />
+        </Picker>
+      </View>
       <BottomSheet
         visible={visible}
-        onBackButtonPress={clickToggle}
-        onBackdropPress={clickToggle}
+        onBackButtonPress={clickToggleSheet}
+        onBackdropPress={clickToggleSheet}
         style={styles.sheet}
       >
         <View style={styles.card}>
           <View style={styles.row}>
             <View style={styles.col12}>
-              <Text>Pilih Kategori</Text>
+              <View>
+                <Text>Pilih Kategori</Text>
+              </View>
               <View style={styles.row}>
                 {
-                  props.Categories.map((data, i)=> (
-                    <Pressable key={i} style={styles.btn1} onPress={() => clickButtonCategory(data)}>
-                      <Text style={styles.btntext1}>{data}</Text>
+                  datacategories.map((data, i)=> (
+                    <Pressable key={i} style={(props.ValueCategory === data || selectcategory === data)?styles.btnActive:styles.btn1} onPress={() => clickButtonCategory(data)}>
+                      <Text style={(props.ValueCategory === data || selectcategory === data)?styles.btntextActive:styles.btntext1}>{data}</Text>
                     </Pressable>
                   ))
                 }
               </View> 
             </View>
-            <View style={styles.col12}>
-              <Text>Urutkan</Text>
-              <View style={styles.row}>
-                <Pressable style={styles.btn1} onPress={() => clickSortByPrice("asc")}>
-                  <Text style={styles.btntext1}>Harga Terendah</Text>
-                </Pressable>
-                <Pressable style={styles.btn1} onPress={() => clickSortByPrice("desc")}>
-                  <Text style={styles.btntext1}>Harga Tertinggi</Text>
+            <View style={[styles.col12, styles.row, styles.bordertop]}>
+              <View style={styles.col6}>
+                <Pressable style={styles.btn3} onPress={() => clickReset()}>
+                  <Text style={styles.btntext2}>RESET</Text>
                 </Pressable>
               </View>
-            </View>
-            <View style={styles.col12}>
-              <Pressable style={styles.btn2} onPress={() => clickFilter()}>
-                <Text style={styles.btntext2}>FILTER</Text>
-              </Pressable>
+              <View style={styles.col6}>
+                <Pressable style={styles.btn2} onPress={() => clickFilter()}>
+                  <Text style={styles.btntext2}>FILTER</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
         </View>
@@ -120,7 +144,8 @@ const styles = StyleSheet.create({
   row: {
     display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    alignItems: 'center'
   },
   col6: {
     width: '50%',
@@ -132,7 +157,7 @@ const styles = StyleSheet.create({
   },
   select: {
     padding: 10,
-    margin: 10
+    width: '100%'
   },
   btn1: {
     backgroundColor: 'white',
@@ -143,7 +168,6 @@ const styles = StyleSheet.create({
     padding: 7
   },
   btntext1: {
-    fontFamily: 'Inter-SemiBold',
     color: '#2196f3',
     textAlign: 'center'
   },
@@ -156,14 +180,35 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   btntext2: {
-    fontFamily: 'Inter-SemiBold',
     color: 'white',
     textAlign: 'center'
   },
+  btnActive: {
+    borderColor: '#2196f3',
+    backgroundColor: '#2196f3',
+    borderWidth: 1,
+    borderRadius: 5,
+    margin: 5,
+    padding: 7,
+  },
+  btntextActive: {
+    color: 'white',
+    textAlign: 'center'
+  },
+  btn3: {
+    borderColor: 'red',
+    backgroundColor: 'red',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 7
+  },
   text: {
-    fontFamily: 'Inter-SemiBold',
     color: 'white',
     marginLeft: 5
+  },
+  bordertop: {
+    borderTopWidth: 1,
+    borderTopColor: 'grey'
   }
 
 });

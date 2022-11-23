@@ -8,26 +8,18 @@ import {
   Alert,
   Text,
   Image,
-  Picker,
-  Pressable,
   ScrollView } from "react-native";
 import { Link } from '@react-navigation/native';
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useFonts } from 'expo-font';
 import FilterSheet from '../components/FilterSheet';
 
 export default function Products() {
   const [isLoading, setLoading] = useState(true);
   const [isEmpety, setEmpety] = useState(false);
   const [dataproductsall, setDataProductsAll] = useState([]);
+  const [dataproductsfirst, setDataProductFirst] = useState([]);
   const [dataproducts, setDataProducts] = useState([]);
-  const [selectcategory, setSelectCategory] = useState('');
-  const [datacategories, setDataCategories] = useState([]);
+  const [category, setFilterCategory] = useState('');
   const [sortprice, setSortPrice] = useState('');
-  const [fontsLoaded, setFont] = useFonts({
-    'Inter-SemiBold': 'https://rsms.me/inter/font-files/Inter-SemiBold.otf?v=3.12',
-  });
-
 
   useEffect(() => {
       fetchData();
@@ -35,62 +27,37 @@ export default function Products() {
 
   const fetchData = async() => {
     try {
-      // const products = require('./products.json');
-      // setDataProducts(products.products);
-      // setDataProductsAll(products.products);
-
       let products = await fetch('https://dummyjson.com/products');
       let jsonproducts = await products.json();
       setDataProducts(jsonproducts.products);
       setDataProductsAll(jsonproducts.products);
-
-    // const categories = require('./categories.json');
-    // setDataCategories(categories.sort());
-
-      let categories = await fetch('https://dummyjson.com/products/categories');
-      let jsoncategories = await categories.json();
-      setDataCategories(jsoncategories.sort());
-
+      setDataProductFirst(jsonproducts.products);
       setLoading(false);
     } catch (error) {
       Alert(error);
     }    
   }
 
-  // const selectCategory = (category) => {
-  //   console.log(category)
-  //   setSelectCategory(category);
-  //   if(category !== ''){
-  //     let datafilterbycategory = dataproducts.filter((e) => e.category === category);
-  //     setDataProducts(datafilterbycategory);
-  //     if(datafilterbycategory.length !== 0){
-  //       setEmpety(false)
-  //     } else {
-  //       setEmpety(true)
-  //     }
-  //   }
-  // }
+  const sortByPrice = (params) => {
+    setSortPrice(params)
+    if(params === 'asc'){
+      let datasort = dataproducts.sort(function(a, b){
+        return a.price - b.price;
+      });
+      setDataProducts(datasort);
+    } else {
+      let datasort = dataproducts.sort(function(a, b){
+        return b.price - a.price;
+      });
+      setDataProducts(datasort);
+    }
+  }
 
-  // const sortByPrice = (sort) => {
-  //   console.log(sort)
-  //   setSortPrice(sort);
-  //   if(sort === 'asc'){
-  //     let datasort = dataproducts.sort(function(a, b){
-  //       return a.price - b.price;
-  //     });
-  //     setDataProducts(datasort);
-  //   } else {
-  //     let datasort = dataproducts.sort(function(a, b){
-  //       return b.price - a.price;
-  //     });
-  //     setDataProducts(datasort);
-  //   }
-  // }
-
-  const filterProduct = (filtercategory, filterprice) => {
-    if(filtercategory === '' && filterprice === ''){
+  const filterProduct = (filtercategory) => {
+    setFilterCategory(filtercategory);
+    if(filtercategory === ''){
       setDataProducts(dataproductsall);
-    } else if(filtercategory !== '' && filterprice === '') {
+    } else if(filtercategory !== '') {
       let datafilterbycategory = dataproductsall.filter((e) => e.category === filtercategory);
       if(datafilterbycategory.length !== 0){
         setEmpety(false)
@@ -98,67 +65,27 @@ export default function Products() {
         setEmpety(true)
       }
       setDataProducts(datafilterbycategory);
-    } else if(filtercategory === '' && filterprice !== '') {
-      console.log(filterprice)
-      if(filterprice === 'asc'){
-        let datasortasc = dataproducts.sort(function(a, b){
-          return a.price - b.price;
-        });
-        setDataProducts(datasortasc);
-      } else {
-        let datasortdesc = dataproducts.sort(function(a, b){
-          return b.price - a.price;
-        });
-        setDataProducts(datasortdesc);
-      }
-    } else {
-      let datafilterbycategory = dataproductsall.filter((e) => e.category === filtercategory);
-      if(datafilterbycategory.length !== 0){
-        setEmpety(false)
-      } else {
-        setEmpety(true)
-      }
-      if(filterprice === 'asc'){
-        let datasortasc = datafilterbycategory.sort(function(a, b){
-          return a.price - b.price;
-        });
-        setDataProducts(datasortasc);
-      } else {
-        let datasortdesc = datafilterbycategory.sort(function(a, b){
-          return b.price - a.price;
-        });
-        setDataProducts(datasortdesc);
-      }
     }
+  }
 
-    
+  const resetFilter = () => {
+    // fetchData();
+    setEmpety(false);
+    setDataProducts(dataproductsfirst);
+    setDataProductsAll(dataproductsfirst);
+    setFilterCategory('');
+    setSortPrice('');
   }
 
   const Header = () => {
     return (
       <View style={styles.filter}>
         <FilterSheet 
-          Categories={datacategories} 
-          FilterProducts={(a,b) => {filterProduct(a,b)}}/>
-        {/* <Picker
-          selectedValue={selectcategory}
-          style={styles.select}
-          onValueChange={(item, itemIndex) => selectCategory(item)} >
-            <Picker.Item label="---category---" value="" />
-            {
-              datacategories.map((data, i)=> (
-                <Picker.Item key={i} label={data} value={data} />
-              ))
-            }
-        </Picker> */}
-        {/* <Picker
-          selectedValue={sortprice}
-          style={styles.select}
-          onValueChange={(item, itemIndex) => sortByPrice(item)} >
-            <Picker.Item label="---sort price---" value="" />
-            <Picker.Item label="Harga Terendah" value="asc" />
-            <Picker.Item label="Harga tertinggi" value="desc" />
-        </Picker> */}
+          ValueSort = {sortprice}
+          SortByPrices= {(a) => sortByPrice(a)}
+          ValueCategory = {category}
+          FilterProducts={(a) => {filterProduct(a)}}
+          ResetFilter={() => {resetFilter()}}/>
       </View>
     )
   }
@@ -173,7 +100,7 @@ export default function Products() {
         ) : (
           isEmpety ? (
             <View style={styles.boxContainer}>
-              <View style={styles.box} >
+              <View style={[styles.box, styles.empty]} >
                 <View style={styles.card}>
                   <View style={styles.itemProduct}>
                     <Text style={styles.titleProduct}>Opps</Text>
@@ -188,10 +115,10 @@ export default function Products() {
             <FlatList
               style={styles.boxContainer}
               data={dataproducts}
-              numColumns={2}
+              numColumns={1}
               keyExtractor={({ id }, index) => id}
               renderItem={({ item }) => (
-                <Link style={styles.box} to={{ screen: 'product', name: item.title , params: { id: item.id, title: item.title } }}>
+                <Link style={styles.box} to={{ screen: 'product', params: { id: item.id} }}>
                   <View style={styles.card}>
                     <View style={styles.wrapImage}>
                       <Image
@@ -203,7 +130,7 @@ export default function Products() {
                       <Text style={styles.titleProduct}>{item.title}</Text>
                       <Text style={styles.descProduct}>{item.description.substring(0, 20)}...</Text>
                       <Text style={styles.priceProduct}>{item.price}</Text>
-                      <Text style={styles.stockProduct}>{item.stock}</Text>
+                      <Text style={styles.stockProduct}>Tersedia {item.stock}</Text>
                     </View>
                   </View>
                 </Link>
@@ -230,17 +157,9 @@ const styles = StyleSheet.create({
   },
   filter : {
     width : '100%',
-    height: 70,
+    height: 63,
     backgroundColor: '#2196f3',
     padding: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  select: {
-    padding: 10,
-    margin: 10,
-    width: '50%'
   },
   loading: {
     flex: 1,
@@ -249,18 +168,16 @@ const styles = StyleSheet.create({
     padding: 10
   },
   boxContainer: {
-    width: '100%',
-    height: '100%',
     backgroundColor: '#eee',
     padding: 5,
-    paddingTop: 20,
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignContent: 'center'
+    paddingTop: 10,
   },
   box: {
-    width: 240,
+    width: '100%',
     padding: 10,
+  },
+  empty: {
+    width: '100%'
   },
   card: {
     borderColor: '#ddd',
@@ -294,16 +211,14 @@ const styles = StyleSheet.create({
   },
   itemProduct: {
     padding: 10,
-    paddingTop: 5
+    paddingTop: 5,
   },
   titleProduct: {
     fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-    marginBottom: 5
+    marginBottom: 5,
   },
   descProduct: {
     fontSize: 14,
-    fontFamily: 'Inter-SemiBold',
     marginBottom: 5,
     color: 'grey',
   },
@@ -311,11 +226,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2196f3',
     marginBottom: 5
-    // fontFamily: 'Inter-SemiBold'
   },
   stockProduct: {
     fontSize: 12,
-    fontFamily: 'Inter-SemiBold',
     marginBottom: 5,
     color: 'grey',
   }

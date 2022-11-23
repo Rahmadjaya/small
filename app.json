@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "Small",
     "slug": "Small",
     "version": "1.0.0",
@@ -7,6 +8,29 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/image.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2196f3"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "24b91a12-a6ce-4b4d-b8f8-9a4dfd3bf3e6"
+      }
+    },
+    "android": {
+      "package": "com.rahmadjaya.Small"
+    }
   }
 }
