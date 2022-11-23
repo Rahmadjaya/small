@@ -69,7 +69,6 @@ export default function Products() {
   }
 
   const resetFilter = () => {
-    // fetchData();
     setEmpety(false);
     setDataProducts(dataproductsfirst);
     setDataProductsAll(dataproductsfirst);
@@ -115,8 +114,8 @@ export default function Products() {
             <FlatList
               style={styles.boxContainer}
               data={dataproducts}
-              numColumns={1}
-              keyExtractor={({ id }, index) => id}
+              // numColumns={1}
+              // keyExtractor={({ id }, index) => id}
               renderItem={({ item }) => (
                 <Link style={styles.box} to={{ screen: 'product', params: { id: item.id} }}>
                   <View style={styles.card}>

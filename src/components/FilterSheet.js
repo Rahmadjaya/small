@@ -65,6 +65,7 @@ export default function FilterSheet(props) {
         </TouchableOpacity>
         <Picker
           selectedValue={props.ValueSort}
+          color='white' 
           style={[styles.select, styles.col6]}
           onValueChange={(item, itemIndex) => sortByPrice(item)} >
             <Picker.Item label="Urutkan" value="" />
@@ -97,7 +98,7 @@ export default function FilterSheet(props) {
             <View style={[styles.col12, styles.row, styles.bordertop]}>
               <View style={styles.col6}>
                 <Pressable style={styles.btn3} onPress={() => clickReset()}>
-                  <Text style={styles.btntext2}>RESET</Text>
+                  <Text style={styles.btntext3}>RESET</Text>
                 </Pressable>
               </View>
               <View style={styles.col6}>
@@ -115,11 +116,6 @@ export default function FilterSheet(props) {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-  },
-  button: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
   },
   sheet: {
     padding: 20,
@@ -197,10 +193,14 @@ const styles = StyleSheet.create({
   },
   btn3: {
     borderColor: 'red',
-    backgroundColor: 'red',
+    backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     padding: 7
+  },
+  btntext3: {
+    color: 'red',
+    textAlign: 'center'
   },
   text: {
     color: 'white',

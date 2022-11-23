@@ -51,32 +51,32 @@ export default function DetailProduct({ navigation, route }) {
             <View style={styles.box} >
               <View style={styles.card}>
                 <Slideshow height={300} dataSource={imageslide}/>
-                <Text style={[styles.title, styles.fontcustom]}>{productdetail.title}</Text>
-                <Text style={[styles.price, styles.fontcustom]}>{productdetail.price}</Text>
+                <Text style={[styles.title, styles.marginBottom5]}>{productdetail.title}</Text>
+                <Text style={[styles.price, styles.marginBottom5]}>{productdetail.price}</Text>
                 <View style={styles.rating}>
-                  <Text style={[styles.fontcustom, styles.valuerating]}><FontAwesome name='star'/>{productdetail.rating}</Text>
+                  <Text style={[styles.marginBottom5, styles.valuerating]}><FontAwesome name='star'/>{productdetail.rating}</Text>
                 </View>
                 <View style={styles.detailproduct}>
-                  <Text style={styles.fontcustom}>Detail Produk</Text>
+                  <Text style={styles.marginBottom5}>Detail Produk</Text>
                   <View style={styles.tabledetailproduct}>
                     <View style={styles.trdetailproduct}>
-                      <Text style={[styles.tddetailproduct,styles.fontcustom ]}>Kategori</Text>
-                      <Text style={[styles.tddetailproduct,styles.fontcustom ]}>{productdetail.category}</Text>
+                      <Text style={[styles.tddetailproduct,styles.marginBottom5 ]}>Kategori</Text>
+                      <Text style={[styles.tddetailproduct,styles.marginBottom5 ]}>{productdetail.category}</Text>
                     </View>
                     <View style={styles.trdetailproduct}>
-                      <Text style={[styles.tddetailproduct,styles.fontcustom ]}>Brand</Text>
-                      <Text style={[styles.tddetailproduct,styles.fontcustom ]}>{productdetail.brand}</Text>
+                      <Text style={[styles.tddetailproduct,styles.marginBottom5 ]}>Brand</Text>
+                      <Text style={[styles.tddetailproduct,styles.marginBottom5 ]}>{productdetail.brand}</Text>
                     </View>
                     <View style={styles.trdetailproduct}>
-                      <Text style={[styles.tddetailproduct,styles.fontcustom ]}>Stok</Text>
-                      <Text style={[styles.tddetailproduct,styles.fontcustom ]}>{productdetail.stock}</Text>
+                      <Text style={[styles.tddetailproduct,styles.marginBottom5 ]}>Stok</Text>
+                      <Text style={[styles.tddetailproduct,styles.marginBottom5 ]}>{productdetail.stock}</Text>
                     </View>
                   </View>
                 </View>
                 <View style={styles.deskipsiproduct}>
-                  <Text style={styles.fontcustom}>Deskripsi Produk</Text>
+                  <Text style={styles.marginBottom5}>Deskripsi Produk</Text>
                   <View>
-                    <Text style={[styles.fontcustom, styles.deskipsibriefproduct]}>{productdetail.description}</Text>
+                    <Text style={[styles.marginBottom5, styles.deskipsibriefproduct]}>{productdetail.description}</Text>
                   </View>
                 </View>
                 <View style={styles.row}>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     color: 'grey',
     fontSize: 13
   },
-  fontcustom: {
+  marginBottom5: {
     marginBottom: 5
   },
   row: {
